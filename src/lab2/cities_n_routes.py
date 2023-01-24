@@ -53,7 +53,7 @@ def get_routes(city_names):
     # for a_combination in itertools.combinations(a, 2):
     #   print(a_combination)
 
-    city_names = itertools.combinations(city_names, 2)
+    city_names = list(itertools.combinations(city_names, 2))
 
     return city_names 
 
