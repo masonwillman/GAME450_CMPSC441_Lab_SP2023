@@ -21,15 +21,57 @@ sys.path.append(str((Path(__file__) / ".." / ".." / "..").resolve().absolute()))
 
 from src.lab5.landscape import elevation_to_rgba
 
+# This imports the get elevation function from lab 5
+from src.lab5.landscape import get_elevation
+
+# This imports the sqrt function for the distance formula
+from math import sqrt
 
 def game_fitness(cities, idx, elevation, size):
-    fitness = 0.0001  # Do not return a fitness of 0, it will mess up the algorithm.
+    fitness = 1  # Do not return a fitness of 0, it will mess up the algorithm.
+
     """
     Create your fitness function here to fulfill the following criteria:
     1. The cities should not be under water
     2. The cities should have a realistic distribution across the landscape
     3. The cities may also not be on top of mountains or on top of each other
     """
+    # Gets the cordinates for each city
+    cords = solution_to_cities(cities, size)
+
+    # Goes through each cordinate for each city
+    for cord1 in cords:
+        # Assigns x1 and y1 the x and y values of the cordinates
+        x1 = cord1[0]
+        y1 = cord1[1]
+
+        # Checks to see if the elevation is below 0.5 (which is checking if the city is under water)
+        if (elevation[x1][y1] < 0.5):
+            # If so, we multiple fitness by the elevation *1.5. 
+            # This uses elevation as a way to scale our fitness factor
+            fitness *= elevation[x1][y1] 
+        # Checks to see if the elevation is above 0.5 (which is checking if the city is on a mountain)
+        elif elevation[x1][y1] > 0.5:
+            # If so, we multiple fitness by the 1.5 / elevation. 
+            # This uses elevation as a way to scale our fitness factor
+            fitness *= (1 / elevation[x1][y1])-1
+        
+        for cord2 in cords:
+            # Assigns x2 and y2 the x and y values of the cordinates
+            x2 = cord2[0]
+            y2 = cord2[1]
+
+            # Calculates the distance of each coordinate using the distance formula
+            distance = sqrt(pow((y1-y2), 2) + pow((x1-x2), 2))
+
+            if distance == 0:
+                continue;
+            
+            if distance < 25:
+                fitness *= distance/100   
+            elif distance > 25:
+                fitness *= (1 / distance/100) - 1
+
     return fitness
 
 
@@ -115,6 +157,7 @@ if __name__ == "__main__":
     n_cities = 10
     elevation = []
     """ initialize elevation here from your previous code"""
+    elevation = get_elevation(size)
     # normalize landscape
     elevation = np.array(elevation)
     elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())
