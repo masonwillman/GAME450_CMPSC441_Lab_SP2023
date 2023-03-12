@@ -28,7 +28,7 @@ from src.lab5.landscape import get_elevation
 from math import sqrt
 
 def game_fitness(cities, idx, elevation, size):
-    fitness = 1  # Do not return a fitness of 0, it will mess up the algorithm.
+    fitness = 0.0001  # Do not return a fitness of 0, it will mess up the algorithm.
 
     """
     Create your fitness function here to fulfill the following criteria:
@@ -37,41 +37,55 @@ def game_fitness(cities, idx, elevation, size):
     3. The cities may also not be on top of mountains or on top of each other
     """
     # Gets the cordinates for each city
-    cords = solution_to_cities(cities, size)
-
+    cords = solution_to_cities(cities, size)  
+    # Copies the coordinates to another variable  
+    neighbors = cords
     # Goes through each cordinate for each city
     for cord1 in cords:
         # Assigns x1 and y1 the x and y values of the cordinates
         x1 = cord1[0]
         y1 = cord1[1]
 
-        # Checks to see if the elevation is below 0.5 (which is checking if the city is under water)
-        if (elevation[x1][y1] < 0.5):
-            # If so, we multiple fitness by the elevation *1.5. 
-            # This uses elevation as a way to scale our fitness factor
-            fitness *= elevation[x1][y1] 
-        # Checks to see if the elevation is above 0.5 (which is checking if the city is on a mountain)
-        elif elevation[x1][y1] > 0.5:
-            # If so, we multiple fitness by the 1.5 / elevation. 
-            # This uses elevation as a way to scale our fitness factor
-            fitness *= (1 / elevation[x1][y1])-1
+        # Properly scales the elevation
+        # For example, 0.5 would become 5
+        fitscale1 = elevation[x1][y1] * 10
+        # Checks to see if the elevation is below 5 (which is checking if the city is under water)
+        if fitscale1 < 5:
+            # If so, we add our fitness scale factor to the fitness 
+            # The lower the elvation, the less the fitness scale factor will be
+            fitness += fitscale1
+        # Checks to see if the elevation is above 5 (which is checking if the city is on a mountain)
+        elif fitscale1 > 5:
+            # If so, we add our fitness scale factor to the fitness 
+            # The higher the elevation, the lower the scale factor
+            # For example, 6 would be 6-10 = -4 * -1 = 4. 9 would be 9-10 = -1 * -1 = 1
+            fitness += (fitscale1-10)*-1
         
-        for cord2 in cords:
-            # Assigns x2 and y2 the x and y values of the cordinates
+        for cord2 in neighbors:
+            # Assigns x2 and y2 the x and y values of the cordinates of the neighbording cities
             x2 = cord2[0]
             y2 = cord2[1]
 
             # Calculates the distance of each coordinate using the distance formula
             distance = sqrt(pow((y1-y2), 2) + pow((x1-x2), 2))
-
-            if distance == 0:
-                continue;
             
+            # divides the distance by 150 (the max distance), to properly scale it
+            # For example, 100/150 = 0.67
+            # We do this because each city has 10 neighbors, so the fitness scale for distance must be 
+            # less than elevation in order for the priority of each to be the same
+            # If each city was 0.5, then 10 * 0.5 would be added or 5. 
+            fitscale2 = distance/150
+            
+            # Checks to see if the distance is less than or greater than the target distance (25)
             if distance < 25:
-                fitness *= distance/100   
+                # If less than, we add the distance scale factor
+                fitness += fitscale2
             elif distance > 25:
-                fitness *= (1 / distance/100) - 1
+                # If greater than, we add the distamce scale factor after recalculation
+                # For example, 50 would be 50/150 = 0.33-1 = -0.67 * -1 = 0.67
+                fitness += (fitscale2-1)*-1
 
+    # Returns the fitness value after completition        
     return fitness
 
 
