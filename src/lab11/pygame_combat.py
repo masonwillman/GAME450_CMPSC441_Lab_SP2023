@@ -29,8 +29,12 @@ class PyGameComputerCombatPlayer(CombatPlayer):
 def run_pygame_combat(combat_surface, screen, player_sprite):
     currentGame = Combat()
     player = PyGameHumanCombatPlayer("Legolas")
+    
     """ Add a line below that will reset the player object
     to an instance of the PyGameAICombatPlayer class"""
+
+    # Code to replace human player with AI player
+    player = PyGameAICombatPlayer("Legolas")
 
     opponent = PyGameComputerCombatPlayer("Computer")
     opponent_sprite = Sprite(
