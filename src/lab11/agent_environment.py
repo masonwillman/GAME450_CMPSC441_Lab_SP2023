@@ -101,6 +101,9 @@ if __name__ == "__main__":
     """ Add a line below that will reset the player variable to 
     a new object of PyGameAIPlayer class."""
 
+    # COMPUTER PLAYER LINE
+    player = PyGameAIPlayer();
+
     state = State(
         current_city=start_city,
         destination_city=start_city,
@@ -112,10 +115,10 @@ if __name__ == "__main__":
 
     while True:
         action = player.selectAction(state)
-        if 0 <= int(chr(action)) <= 9:
-            if int(chr(action)) != state.current_city and not state.travelling:
+        if 0 <= action <= 9:
+            if action != state.current_city and not state.travelling:
                 start = cities[state.current_city]
-                state.destination_city = int(chr(action))
+                state.destination_city = action
                 destination = cities[state.destination_city]
                 player_sprite.set_location(cities[state.current_city])
                 state.travelling = True
