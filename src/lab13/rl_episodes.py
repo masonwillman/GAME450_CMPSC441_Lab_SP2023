@@ -74,32 +74,40 @@ def run_episodes(n_episodes):
         Return the action values as a dictionary of dictionaries where the keys are states and 
             the values are dictionaries of actions and their values.
     '''
-    # Creates an empty list for rewards
-    rewards = []
-    
-    # Creates empty dictionary
-    Dict = {}
+    returns = {}
 
-    # Run n_episodes
+    action_values = {}
+
+    tmp_dict = {}
+
+    sum = 0
+
     for i in range(n_episodes):
 
-        # Creates an random combat player that selects random actions
         player = PyGameRandomCombatPlayer("Jeff")
     
-        # Creates a computer player for the combat player to fight against
         opponent = PyGameComputerCombatPlayer("Bob")
         
-        # Makes sure the episodes are random and returns the history of the episode
         history = run_random_episode(player, opponent)
 
-        # Enumerates the history of the episode and collects the returns for each state-action pair in a dictionary
-        for index, (state, action, reward) in enumerate(history):
-            Dict[state] = get_history_returns(history)
+        returns = get_history_returns(history)
+        
+        for state in returns:
+            for action in returns[state]:
+                if state not in action_values:
+                    tmp_dict = {state: {action: [returns[state][action]]}}
+                    action_values.update(tmp_dict)
+                else:
+                    if action not in action_values[state]:
+                        action_values[state][action] = [returns[state][action]]
+                    action_values[state][action].append(returns[state][action])
 
-    
-
-
-
+    for state in action_values:
+        for action in action_values[state]:
+            sum = 0
+            for i in action_values[state][action]:
+                sum += i 
+            action_values[state][action] = sum / len(action_values[state][action])
 
     return action_values
 
@@ -125,7 +133,7 @@ def test_policy(policy):
 
 
 if __name__ == "__main__":
-    action_values = run_episodes(10000)
+    action_values = run_episodes(1000)
     print(action_values)
     optimal_policy = get_optimal_policy(action_values)
     print(optimal_policy)

@@ -52,7 +52,7 @@ def run_turn(currentGame, player, opponent):
     print("%s's health = %d" % (opponent.name, opponent.health))
     currentGame.checkWin(player, opponent)
     
-    return [[player.health, opponent.health], player.weapon, currentGame.reward]
+    return ((player.health, opponent.health), player.weapon, currentGame.reward)
 
 def draw_combat_on_window(combat_surface, screen, player_sprite, opponent_sprite):
     screen.blit(combat_surface, (0, 0))
