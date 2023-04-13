@@ -84,6 +84,8 @@ def run_episodes(n_episodes):
 
     for i in range(n_episodes):
 
+        # Initializes the player characters and gets the returns for the history of the episode
+
         player = PyGameRandomCombatPlayer("Jeff")
     
         opponent = PyGameComputerCombatPlayer("Bob")
@@ -91,22 +93,39 @@ def run_episodes(n_episodes):
         history = run_random_episode(player, opponent)
 
         returns = get_history_returns(history)
-        
+
+        # For each state in returns, we go to each associated action
         for state in returns:
             for action in returns[state]:
+
+                # If the state does not exist in the dictionary
                 if state not in action_values:
+
+                    # We add the state to the dictionary
                     tmp_dict = {state: {action: [returns[state][action]]}}
                     action_values.update(tmp_dict)
                 else:
-                    if action not in action_values[state]:
-                        action_values[state][action] = [returns[state][action]]
-                    action_values[state][action].append(returns[state][action])
 
+                    # Otherwise, we check to see if the action already exists
+                    if action not in action_values[state]:
+
+                        # If so, we add the new action and value
+                        action_values[state][action] = [returns[state][action]]
+                    else:
+
+                        # If not, we just append to the list of returns 
+                        action_values[state][action].append(returns[state][action])
+
+    # For each state in returns, we go to each associated action
     for state in action_values:
         for action in action_values[state]:
+
+            # Reset the sum and go through the list of returns, adding them to the sum
             sum = 0
             for i in action_values[state][action]:
                 sum += i 
+
+            # Set the value associated with each state action pair as an average of the returns list
             action_values[state][action] = sum / len(action_values[state][action])
 
     return action_values
@@ -133,7 +152,7 @@ def test_policy(policy):
 
 
 if __name__ == "__main__":
-    action_values = run_episodes(1000)
+    action_values = run_episodes(30000)
     print(action_values)
     optimal_policy = get_optimal_policy(action_values)
     print(optimal_policy)
