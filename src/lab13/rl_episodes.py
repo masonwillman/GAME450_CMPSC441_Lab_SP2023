@@ -90,7 +90,7 @@ def run_episodes(n_episodes):
     
         opponent = PyGameComputerCombatPlayer("Bob")
         
-        history = run_random_episode(player, opponent)
+        history = run_episode(player, opponent)
 
         returns = get_history_returns(history)
 
@@ -152,7 +152,7 @@ def test_policy(policy):
 
 
 if __name__ == "__main__":
-    action_values = run_episodes(30000)
+    action_values = run_episodes(20000)
     print(action_values)
     optimal_policy = get_optimal_policy(action_values)
     print(optimal_policy)
