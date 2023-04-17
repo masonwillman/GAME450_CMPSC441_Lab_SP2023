@@ -47,13 +47,20 @@ def get_route_cost(route_coordinate, game_map):
     return game_map[tuple(zip(*path))].sum()
 
 
-def route_to_coordinates(city_locations, city_names, routes):
+def route_to_coordinates(city_locations, routes):
     """ get coordinates of each of the routes from cities and city_names"""
     route_coordinates = []
     for route in routes:
-        start = city_names.index(route[0])
-        end = city_names.index(route[1])
-        route_coordinates.append((city_locations[start], city_locations[end]))
+        #######################################################################################################################
+        start = route[0]
+        end = route[1]
+        for city1 in city_locations:
+          if city1[0] == start[0] and city1[1] == start[1]:
+            for city2 in city_locations:
+                if city2[0] == end[0] and city2[1] == end[1]:  
+                  route_coordinates.append((city1, city2))
+        
+        #######################################################################################################################
     return route_coordinates
 
 
@@ -77,11 +84,18 @@ def main():
     game_map = generate_terrain(map_size)
     print(f'Map size: {game_map.shape}')
 
+  ##############################################################################################################################
+
     city_locations = get_randomly_spread_cities(map_size, n_cities)
-    routes = get_routes(city_names)
+    # routes = get_routes(city_names)
+    routes = get_routes(city_locations)
+
     np.random.shuffle(routes)
     routes = routes[:10]
-    route_coordinates = route_to_coordinates(city_locations, city_names, routes)
+    route_coordinates = route_to_coordinates(city_locations, routes)
+
+  ##############################################################################################################################
+
 
     for route, route_coordinate in zip(routes, route_coordinates):
         print(f'Cost between {route[0]} and {route[1]}: {get_route_cost(route_coordinate, game_map)}')

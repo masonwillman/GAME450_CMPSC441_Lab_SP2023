@@ -13,6 +13,12 @@ sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
 
+from lab7.ga_cities import game_fitness, setup_GA, solution_to_cities 
+from lab11.landscape import get_elevation
+from lab3.travel_cost import get_route_cost, route_to_coordinates, generate_terrain
+import numpy as np
+
+
 
 pygame.font.init()
 game_font = pygame.font.SysFont("Comic Sans MS", 15)
@@ -89,10 +95,43 @@ if __name__ == "__main__":
     ]
 
     cities = get_randomly_spread_cities(size, len(city_names))
+
+    # Implementation of GA ###########################################################################################
+ 
+    # Gets the correct elevation for the fitness function    
+    elevation = get_elevation(size)
+    elevation = np.array(elevation)
+    elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())
+
+    # Sets up the fitness function and GA
+    fitness = lambda cities, idx: game_fitness(
+        cities, idx, elevation, size
+    )
+    fitness_function, ga_instance = setup_GA(fitness, len(city_names), size)
+
+    # Runs the GA to optimize the parameters
+    ga_instance.run()
+
+    # Gets the solution from the GA
+    cities = ga_instance.best_solution()[0]
+    cities = solution_to_cities(cities, size)
+    
+    #################################################################################################################    
+
+    # Implementation of route cost based on terrain #################################################################
     routes = get_routes(cities)
 
     random.shuffle(routes)
     routes = routes[:10]
+    
+    game_map = generate_terrain(size)
+
+    route_coordinates = route_to_coordinates(cities, routes)
+
+    for route, route_coordinate in zip(routes, route_coordinates):
+        print(f'Cost between {route[0]} and {route[1]}: {get_route_cost(route_coordinate, game_map)}')
+
+    #################################################################################################################
 
     player_sprite = Sprite(sprite_path, cities[start_city])
 
@@ -102,7 +141,7 @@ if __name__ == "__main__":
     a new object of PyGameAIPlayer class."""
 
     # Code to replace human player with AI player
-    player = PyGameAIPlayer();
+    # player = PyGameAIPlayer();
 
     state = State(
         current_city=start_city,

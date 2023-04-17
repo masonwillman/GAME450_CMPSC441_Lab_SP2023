@@ -3,7 +3,7 @@ from perlin_noise import PerlinNoise
 import numpy as np
 
 
-def get_elevation(size, octaves=3):
+def get_elevation(size, octaves=9):
     xpix, ypix = size
     noise = PerlinNoise(octaves=octaves, seed=2)
     # elevation = np.random.random(size)
