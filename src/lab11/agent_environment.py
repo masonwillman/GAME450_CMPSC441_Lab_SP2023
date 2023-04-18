@@ -81,6 +81,7 @@ if __name__ == "__main__":
 
     landscape_surface = get_landscape_surface(size)
     combat_surface = get_combat_surface(size)
+
     city_names = [
         "Morkomasto",
         "Morathrad",
@@ -119,17 +120,18 @@ if __name__ == "__main__":
     #################################################################################################################    
 
     # Implementation of route cost based on terrain #################################################################
+    
     routes = get_routes(cities)
 
     random.shuffle(routes)
     routes = routes[:10]
     
-    game_map = generate_terrain(size)
+    game_map = pygame.surfarray.array3d(landscape_surface);
 
     route_coordinates = route_to_coordinates(cities, routes)
 
     for route, route_coordinate in zip(routes, route_coordinates):
-        print(f'Cost between {route[0]} and {route[1]}: {get_route_cost(route_coordinate, game_map)}')
+        print(f'Cost between {route[0]} and {route[1]}: {get_route_cost(route_coordinate, game_map) / 1000}')
 
     #################################################################################################################
 
@@ -175,6 +177,7 @@ if __name__ == "__main__":
             pygame.draw.line(screen, (255, 0, 0), *line)
 
         displayCityNames(cities, city_names)
+        
         if state.travelling:
             state.travelling = player_sprite.move_sprite(destination, sprite_speed)
             state.encounter_event = random.randint(0, 1000) < 2
