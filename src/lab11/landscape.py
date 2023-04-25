@@ -26,8 +26,8 @@ def elevation_to_rgba(elevation, cmap="gist_earth"):
     landscape = landscape.astype("uint8")
     return landscape
 
-
-get_landscape = lambda pixel_map: elevation_to_rgba(get_elevation(pixel_map))
+# Now has a tuple with the elevation and the elevation to rgba
+get_landscape = lambda pixel_map: (elevation := get_elevation(pixel_map), elevation_to_rgba(elevation))
 get_combat_bg = lambda pixel_map: elevation_to_rgba(
     get_elevation(pixel_map, 10), "RdPu"
 )

@@ -61,23 +61,31 @@ class Combat:
         self.gameOver = False
         self.round = 0
         self.reward = 0
+        # New variables used in for checking lose and money gained
+        self.lose = False
+        self.money = 0
 
     def newRound(self):
         self.round += 1
         print("\n***   Round: %d   ***\n" % (self.round))
 
     # Check if either or both Players is below zero health
+    # Sets the lose and money object variables to the approriate values
     def checkWin(self, player, opponent):
         if player.health < 1 and opponent.health > 0:
             self.gameOver = True
+            self.lose = True
+            self.money = 0
             print("You Lose")
             return -1
         elif opponent.health < 1 and player.health > 0:
             self.gameOver = True
+            self.money = 50
             print("You Win")
             return 1
         elif player.health < 1 and opponent.health < 1:
             self.gameOver = True
+            self.money = 0
             print("*** Draw ***")
             return 0
         return 0
