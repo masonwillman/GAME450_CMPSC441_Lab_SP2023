@@ -20,6 +20,7 @@ class PyGameHumanPlayer:
                         # Gets the variables that will be compared
                         city1 = route_coordinates[i][0]
                         city2 = route_coordinates[i][1]
+
                         current = cities[state.current_city]
                         if ord("0") <= event.key <= ord("9"):
                             destination = cities[event.key-48]
@@ -27,7 +28,7 @@ class PyGameHumanPlayer:
                             break;
 
                         # Checks to see if the current city and destination match those in the route
-                        if (city1 == current) and (city2 == destination):
+                        if (city1 == current).all() and (city2 == destination).all():
 
                             # If do, subtract the cost from money, checking if we are out of money
                             self.money = self.money - costs[i]
@@ -39,7 +40,7 @@ class PyGameHumanPlayer:
                             return event.key
                     
                         # Checks to see if the current city and destination match those in the route
-                        if (city1 == destination)and (city2 == current):
+                        if (city1 == destination).all() and (city2 == current).all():
 
                             # If do, subtract the cost from money, checking if we are out of money
                             self.money = self.money - costs[i]

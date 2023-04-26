@@ -28,7 +28,7 @@ from src.lab5.landscape import get_elevation
 from math import sqrt
 
 def game_fitness(cities, idx, elevation, size):
-    fitness = 0.0001  # Do not return a fitness of 0, it will mess up the algorithm.
+    fitness = 1  # Do not return a fitness of 0, it will mess up the algorithm.
 
     """
     Create your fitness function here to fulfill the following criteria:
@@ -36,6 +36,7 @@ def game_fitness(cities, idx, elevation, size):
     2. The cities should have a realistic distribution across the landscape
     3. The cities may also not be on top of mountains or on top of each other
     """
+
     # Gets the cordinates for each city
     cords = solution_to_cities(cities, size)  
     # Copies the coordinates to another variable  
@@ -48,18 +49,17 @@ def game_fitness(cities, idx, elevation, size):
 
         # Properly scales the elevation
         # For example, 0.5 would become 5
-        fitscale1 = elevation[x1][y1] * 10
-        # Checks to see if the elevation is below 5 (which is checking if the city is under water)
-        if fitscale1 < 5:
-            # If so, we add our fitness scale factor to the fitness 
+        fitscale1 = elevation[x1][y1] 
+        # Checks to see if the elevation is below 0.5 (which is checking if the city is under water)
+        if fitscale1 < 0.5:
+            # If so, we multiple fitness with the fitness scale factor 
             # The lower the elvation, the less the fitness scale factor will be
-            fitness += fitscale1
-        # Checks to see if the elevation is above 5 (which is checking if the city is on a mountain)
-        elif fitscale1 > 5:
-            # If so, we add our fitness scale factor to the fitness 
+            fitness *= fitscale1
+        # Checks to see if the elevation is above 0.5 (which is checking if the city is on a mountain)
+        elif fitscale1 > 0.5:
+            # If so, we multiple fitness with the fitness scale factor
             # The higher the elevation, the lower the scale factor
-            # For example, 6 would be 6-10 = -4 * -1 = 4. 9 would be 9-10 = -1 * -1 = 1
-            fitness += (fitscale1-10)*-1
+            fitness *= (fitscale1-1)*-1
         
         for cord2 in neighbors:
             # Assigns x2 and y2 the x and y values of the cordinates of the neighbording cities
@@ -68,22 +68,26 @@ def game_fitness(cities, idx, elevation, size):
 
             # Calculates the distance of each coordinate using the distance formula
             distance = sqrt(pow((y1-y2), 2) + pow((x1-x2), 2))
-            
-            # divides the distance by 150 (the max distance), to properly scale it
+            max_distance = sqrt(pow((0-size[0]), 2) + pow((0-size[1]), 2))
+
+            # Gets target distance
+            check = max_distance/4
+
+            # divides the distance by ]the max distance, to properly scale it
             # For example, 100/150 = 0.67
             # We do this because each city has 10 neighbors, so the fitness scale for distance must be 
-            # less than elevation in order for the priority of each to be the same
-            # If each city was 0.5, then 10 * 0.5 would be added or 5. 
-            fitscale2 = distance/150
+            fitscale2 = distance/max_distance
             
-            # Checks to see if the distance is less than or greater than the target distance (25)
-            if distance < 25:
-                # If less than, we add the distance scale factor
-                fitness += fitscale2
-            elif distance > 25:
-                # If greater than, we add the distamce scale factor after recalculation
+            # Checks to see if the distance is less than or greater than the target distance
+            if distance == 0:
+                continue
+            elif distance < check:
+                # If less than, we multiple the distance scale factor
+                fitness *= fitscale2
+            elif distance > check:
+                # If greater than, we multiple the distance scale factor after recalculation
                 # For example, 50 would be 50/150 = 0.33-1 = -0.67 * -1 = 0.67
-                fitness += (fitscale2-1)*-1
+                fitness *= (fitscale2-1)*-1
 
     # Returns the fitness value after completition        
     return fitness

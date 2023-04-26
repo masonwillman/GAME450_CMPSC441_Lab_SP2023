@@ -116,7 +116,7 @@ if __name__ == "__main__":
     cities = get_randomly_spread_cities(size, len(city_names))
 
     # Implementation of GA ###########################################################################################
-    '''
+    
     # Gets the correct elevation for the fitness function    
     elevation = np.array(elevation)
     elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # Gets the solution from the GA
     cities = ga_instance.best_solution()[0]
     cities = solution_to_cities(cities, size)
-    '''
+
     #################################################################################################################    
 
     # Implementation of route cost based on terrain #################################################################
