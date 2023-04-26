@@ -15,7 +15,7 @@ from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
 
 from lab7.ga_cities import game_fitness, setup_GA, solution_to_cities 
 from lab3.travel_cost import get_route_cost
-# from lab11.text_to_image import create_image
+from lab11.text_to_image import create_image
 import numpy as np
 
 
@@ -85,12 +85,12 @@ if __name__ == "__main__":
     prompt = input("What would you like the player to be? ")
     print(prompt)
 
-    # create_image(prompt, player_path)
+    create_image(prompt, player_path)
 
     prompt = input("What would you like the opponent to be? ")
     print(prompt)
 
-    # create_image(prompt, opponent_path)
+    create_image(prompt, opponent_path)
 
 ###########################################################################################################################################
 
